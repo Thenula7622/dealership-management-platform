@@ -1,0 +1,90 @@
+export const initialConfig = {
+  businessName: "Thenula Enterprises",
+  tagline: "Premium & Verified 3S Automotive Hub",
+  address: "Mawathagama, Sri Lanka",
+  contactPhone: "94 76 820 2700",
+  whatsappNumber: "94768202700",
+  email: "thenula2002@gmail.com",
+  currencyCode: "LKR"
+};
+
+export const initialVehicles = [
+  {
+    id: 1,
+    title: "Toyota Vitz Safety Edition 2018",
+    brand: "Toyota",
+    model: "Vitz",
+    vehicleType: "CAR",
+    manufactureYear: 2018,
+    conditionType: "USED",
+    transmission: "AUTOMATIC",
+    fuelType: "PETROL",
+    engineCapacity: 1000,
+    mileageKm: 48000,
+    price: 7850000,
+    purchaseCost: 6900000,
+    repairCost: 50000,
+    imageUrl: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1000&q=80",
+    galleryUrls: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1000&q=80",
+    engineScore: 95,
+    batteryScore: 90,
+    suspensionScore: 92,
+    bodyPaintScore: 88,
+    inspectorNotes: "Certified Multi-Point Inspection Passed. No structural damage.",
+    status: "AVAILABLE"
+  },
+  {
+    id: 2,
+    title: "Honda Vezel Z Grade 2015",
+    brand: "Honda",
+    model: "Vezel",
+    vehicleType: "CAR",
+    manufactureYear: 2015,
+    conditionType: "USED",
+    transmission: "AUTOMATIC",
+    fuelType: "HYBRID",
+    engineCapacity: 1500,
+    mileageKm: 72000,
+    price: 11500000,
+    purchaseCost: 10200000,
+    repairCost: 80000,
+    imageUrl: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80",
+    galleryUrls: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1000&q=80",
+    engineScore: 92,
+    batteryScore: 88,
+    suspensionScore: 90,
+    bodyPaintScore: 86,
+    inspectorNotes: "Hybrid battery health tested at 88%. Factory original clearcoat.",
+    status: "AVAILABLE"
+  },
+  {
+    id: 3,
+    title: "Toyota Premio G Superior 2018",
+    brand: "Toyota",
+    model: "Premio",
+    vehicleType: "CAR",
+    manufactureYear: 2018,
+    conditionType: "USED",
+    transmission: "AUTOMATIC",
+    fuelType: "PETROL",
+    engineCapacity: 1500,
+    mileageKm: 52000,
+    price: 19500000,
+    purchaseCost: 17800000,
+    repairCost: 60000,
+    imageUrl: "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1000&q=80",
+    galleryUrls: "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1000&q=80",
+    engineScore: 96,
+    batteryScore: 92,
+    suspensionScore: 94,
+    bodyPaintScore: 91,
+    inspectorNotes: "Pristine showroom condition with complete agent service records.",
+    status: "AVAILABLE"
+  }
+];
+
+export const initialStaff = [
+  { id: 1, fullName: "Thenula Rathnayaka", email: "admin@thenula.lk", role: "SUPER_ADMIN", phoneNumber: "0768202700", monthlySalary: 250000 },
+  { id: 2, fullName: "Nimal Perera", email: "service@thenula.lk", role: "WORKSHOP_MANAGER", phoneNumber: "0771234567", monthlySalary: 140000 },
+  { id: 3, fullName: "Ruwan Silva", email: "sales@thenula.lk", role: "SALES_EXECUTIVE", phoneNumber: "0719876543", monthlySalary: 110000 }
+];
