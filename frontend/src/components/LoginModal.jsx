@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// Vercel Demo Default Staff Users (Backend නැතිවුවද Login විය හැකි පරිදි)
+// Vercel Demo Accounts
 const DEMO_STAFF_ACCOUNTS = [
   {
     id: 1,
@@ -36,7 +36,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
   if (!isOpen) return null;
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
@@ -44,48 +44,26 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password.trim();
 
-    try {
-      // 1. මුලින්ම Backend එකට try කරයි
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s timeout
-
-      const res = await fetch('http://localhost:8080/api/staff/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
-        signal: controller.signal,
-      }).catch(() => null);
-
-      clearTimeout(timeoutId);
-
-      if (res && res.ok) {
-        const staffUser = await res.json();
-        onLoginSuccess(staffUser);
-        onClose();
-        return;
-      }
-    } catch {
-      // Backend නැතිනම් Demo Logic එකට යයි
-    }
-
-    // 2. Backend නොමැති විට (Vercel Live Demo Mode) Demo Accounts පරීක්ෂා කිරීම
+    // Backend එකට call කරන්නේ නැතුව කෙළින්ම Demo Account එක verify කරයි
     const matchedStaff = DEMO_STAFF_ACCOUNTS.find(
       (s) => s.email.toLowerCase() === cleanEmail && s.password === cleanPass
     );
 
-    if (matchedStaff) {
-      onLoginSuccess(matchedStaff);
-      onClose();
-    } else {
-      setErrorMsg('Invalid Credentials. Please use the quick demo buttons below.');
-    }
-
-    setLoading(false);
+    setTimeout(() => {
+      if (matchedStaff) {
+        onLoginSuccess(matchedStaff);
+        onClose();
+      } else {
+        setErrorMsg('Invalid Credentials! Please click the quick buttons above.');
+      }
+      setLoading(false);
+    }, 250);
   };
 
   const handleQuickFill = (roleEmail, rolePass) => {
     setEmail(roleEmail);
     setPassword(rolePass);
+    setErrorMsg('');
   };
 
   return (
@@ -144,7 +122,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               type="email"
               required
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 font-medium"
             />
           </div>
@@ -155,7 +133,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               type="password"
               required
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 font-medium"
             />
           </div>
@@ -165,7 +143,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-red-950/50"
           >
-            {loading ? 'Authenticating Staff...' : 'Sign In to Dashboard →'}
+            {loading ? 'Entering Dashboard...' : 'Sign In to Dashboard →'}
           </button>
         </form>
       </div>
