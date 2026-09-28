@@ -1,5 +1,33 @@
 import React, { useState } from 'react';
 
+// Vercel Demo Default Staff Users (Backend නැතිවුවද Login විය හැකි පරිදි)
+const DEMO_STAFF_ACCOUNTS = [
+  {
+    id: 1,
+    fullName: 'Thenula Rathnayaka (Executive)',
+    email: 'admin@thenula.lk',
+    password: 'admin123',
+    role: 'SUPER_ADMIN',
+    phoneNumber: '0768202700',
+  },
+  {
+    id: 2,
+    fullName: 'Nimal Perera (Service Lead)',
+    email: 'service@thenula.lk',
+    password: 'service123',
+    role: 'WORKSHOP_MANAGER',
+    phoneNumber: '0771234567',
+  },
+  {
+    id: 3,
+    fullName: 'Ruwan Silva (Sales Consultant)',
+    email: 'sales@thenula.lk',
+    password: 'sales123',
+    role: 'SALES_EXECUTIVE',
+    phoneNumber: '0719876543',
+  },
+];
+
 const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const [email, setEmail] = useState('admin@thenula.lk');
   const [password, setPassword] = useState('admin123');
@@ -13,27 +41,46 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     setLoading(true);
     setErrorMsg('');
 
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+
     try {
+      // 1. මුලින්ම Backend එකට try කරයි
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s timeout
+
       const res = await fetch('http://localhost:8080/api/staff/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password: password.trim() }),
-      });
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
+        signal: controller.signal,
+      }).catch(() => null);
 
-      if (res.ok) {
+      clearTimeout(timeoutId);
+
+      if (res && res.ok) {
         const staffUser = await res.json();
         onLoginSuccess(staffUser);
         onClose();
-      } else {
-        const err = await res.text();
-        setErrorMsg(err || 'Invalid Staff Credentials.');
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      setErrorMsg('Cannot connect to Backend server.');
-    } finally {
-      setLoading(false);
+    } catch {
+      // Backend නැතිනම් Demo Logic එකට යයි
     }
+
+    // 2. Backend නොමැති විට (Vercel Live Demo Mode) Demo Accounts පරීක්ෂා කිරීම
+    const matchedStaff = DEMO_STAFF_ACCOUNTS.find(
+      (s) => s.email.toLowerCase() === cleanEmail && s.password === cleanPass
+    );
+
+    if (matchedStaff) {
+      onLoginSuccess(matchedStaff);
+      onClose();
+    } else {
+      setErrorMsg('Invalid Credentials. Please use the quick demo buttons below.');
+    }
+
+    setLoading(false);
   };
 
   const handleQuickFill = (roleEmail, rolePass) => {
@@ -59,28 +106,31 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
           </div>
         )}
 
-        {/* Quick Demo Login Credentials Bar */}
-        <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
-          <span className="text-[10px] text-slate-500 uppercase font-bold block">Quick Demo Credentials:</span>
+        {/* Quick Demo One-Click Login Buttons */}
+        <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-2.5">
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Instant Demo Access:</span>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold border border-emerald-500/20">Click &amp; Sign In</span>
+          </div>
           <div className="grid grid-cols-3 gap-1.5 text-[10px]">
             <button
               type="button"
               onClick={() => handleQuickFill('admin@thenula.lk', 'admin123')}
-              className="p-1.5 rounded-lg bg-red-950/40 text-red-400 border border-red-500/30 hover:bg-red-900 font-bold truncate"
+              className="p-2 rounded-xl bg-red-950/40 text-red-400 border border-red-500/30 hover:bg-red-900/60 font-bold truncate transition"
             >
               👑 Super Admin
             </button>
             <button
               type="button"
               onClick={() => handleQuickFill('service@thenula.lk', 'service123')}
-              className="p-1.5 rounded-lg bg-blue-950/40 text-blue-400 border border-blue-500/30 hover:bg-blue-900 font-bold truncate"
+              className="p-2 rounded-xl bg-blue-950/40 text-blue-400 border border-blue-500/30 hover:bg-blue-900/60 font-bold truncate transition"
             >
               🔧 Workshop Mgr
             </button>
             <button
               type="button"
               onClick={() => handleQuickFill('sales@thenula.lk', 'sales123')}
-              className="p-1.5 rounded-lg bg-amber-950/40 text-amber-400 border border-amber-500/30 hover:bg-amber-900 font-bold truncate"
+              className="p-2 rounded-xl bg-amber-950/40 text-amber-400 border border-amber-500/30 hover:bg-amber-900/60 font-bold truncate transition"
             >
               💼 Sales Exec
             </button>
@@ -95,7 +145,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 font-medium"
             />
           </div>
 
@@ -106,7 +156,7 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-red-500 font-medium"
             />
           </div>
 
